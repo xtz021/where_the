@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.xavie.myweatherapp.MainActivity">
+    tools:context="com.example.oxygen.m.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,13 +13,13 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/isSpace"
             android:layout_width="188dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/btn_find"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -28,7 +28,7 @@
             android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/detail"
+            android:id="@+id/btn_add"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -45,7 +45,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageIcon"
+            android:id="@+id/main_icon"
             android:layout_width="295dp"
             android:layout_height="147dp"
             android:layout_gravity="center"
@@ -126,6 +126,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/icon_day1"
                 android:layout_width="match_parent"
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
@@ -154,6 +155,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/icon_day2"
                 android:layout_width="match_parent"
                 android:src="@drawable/b"
                 android:layout_height="71dp"
@@ -182,6 +184,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/icon_day3"
                 android:layout_width="match_parent"
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
@@ -210,6 +213,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/icon_day4"
                 android:layout_width="match_parent"
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
@@ -238,6 +242,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/icon_day5"
                 android:layout_width="match_parent"
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"

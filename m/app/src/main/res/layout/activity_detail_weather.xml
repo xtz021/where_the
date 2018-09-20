@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.xavie.myweatherapp.NextDaysActivity">
+    tools:context="com.example.oxygen.m.detail_weather">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/listview"
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></ListView>
 

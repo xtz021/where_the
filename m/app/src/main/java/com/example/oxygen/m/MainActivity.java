@@ -1,17 +1,8 @@
 package com.example.oxygen.m;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AndroidException;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-
-import java.time.Instant;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private Button btn_Them;
@@ -20,18 +11,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ListView list = (ListView) findViewById(R.id.list_view);
-
-        detail test1 = new detail("Hà Nội", "100:100:100", null);
-        detail test2 = new detail("Hà Nội", "100:100:100", null);
-
-        detail[] ds = new detail[]{test1, test2};
-
-        ArrayAdapter<detail> danhsach = new ArrayAdapter<detail>(
-                MainActivity.this, android.R.layout.activity_list_item,ds
-                );
-
-        list.setAdapter((ListAdapter) danhsach);
     }
+
+
+    // Instantiate the RequestQueue.
+    RequestQueue queue = Volley.newRequestQueue(this);
+    String url ="http://www.google.com";
+
+    // Request a string response from the provided URL.
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    // Display the first 500 characters of the response string.
+                    mTextView.setText("Response is: "+ response.substring(0,500));
+                }
+            }, new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            mTextView.setText("That didn't work!");
+        }
+    });
+
+// Add the request to the RequestQueue.
+queue.add(stringRequest);
 }

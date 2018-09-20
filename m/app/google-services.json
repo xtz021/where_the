@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "444310394588",
+    "firebase_url": "https://weatherapp-1536682287593.firebaseio.com",
+    "project_id": "weatherapp-1536682287593",
+    "storage_bucket": "weatherapp-1536682287593.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444310394588:android:1a6c841579aa6847",
+        "android_client_info": {
+          "package_name": "com.example.oxygen.m"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "444310394588-uugrt5sb5irq18qo5jh8jbsm89jbi4o6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpO7IcZDD4u3esOkzGu7VV_qHsqVrEroQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

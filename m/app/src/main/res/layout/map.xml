@@ -9,23 +9,28 @@
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/text_findter"
             android:layout_width="183dp"
             android:layout_height="wrap_content"
             android:hint="Nhập tên thành phố" />
 
-        <Button
-            android:id="@+id/button"
+        <TextView
+            android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tìm kiếm" />
+            android:text="Tìm kiếm"
+            android:textSize="17dp"
+            android:textAlignment="center"/>
 
-        <Button
-            android:id="@+id/button2"
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Xác nhận" />
+            android:textSize="17dp"
+            android:textAlignment="center"
+            android:text="xác nhận" />
 
     </android.support.design.widget.TextInputLayout>
 
