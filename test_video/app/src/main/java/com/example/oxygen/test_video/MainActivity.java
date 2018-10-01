@@ -1,8 +1,10 @@
 package com.example.oxygen.test_video;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
@@ -23,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         btnPaly = (Button) findViewById(R.id.btnPlay);
         videoPlayer = (VideoView) findViewById(R.id.videoView);
-        mediaC  = new MediaController(this);
+        mediaC  = new MyMediaController(this);
+        mediaC.show(0);
 
     }
 
@@ -34,5 +37,25 @@ public class MainActivity extends AppCompatActivity {
             videoPlayer.setVideoURI(uri);
             videoPlayer.setMediaController(mediaC);
             videoPlayer.start();
+    }
+
+    class MyMediaController extends MediaController
+    {
+
+        public MyMediaController(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+        public MyMediaController(Context context, boolean useFastForward) {
+            super(context, useFastForward);
+        }
+
+        public MyMediaController(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void show(int timeout) {
+            super.show(0);
+        }
     }
 }
