@@ -1,13 +1,67 @@
 package com.example.oxygen.m;
 
 public class detail {
-    private String tenThanhPho, toaDo, anh;
+    private String tenThanhPho, toaDo, anh, huongGio, may;
+    private int nhietDoSang, nhietDoToi, doAm, luongMua;
 
-    public detail(String tenThanhPho, String toaDo, String anh)
+    public detail()
+    {
+
+    }
+
+    public detail(String tenThanhPho, String toaDo, String anh, String huongGio, String may, int nhietDoSang, int nhietDoToi, int doAm, int luongMua)
     {
         this.tenThanhPho = tenThanhPho;
         this.toaDo = toaDo;
         this.anh = anh;
+    }
+
+    public int getDoAm() {
+        return doAm;
+    }
+
+    public void setDoAm(int doAm) {
+        this.doAm = doAm;
+    }
+
+    public int getLuongMua() {
+        return luongMua;
+    }
+
+    public void setLuongMua(int luongMua) {
+        this.luongMua = luongMua;
+    }
+
+    public int getNhietDoSang() {
+        return nhietDoSang;
+    }
+
+    public void setNhietDoSang(int nhietDoSang) {
+        this.nhietDoSang = nhietDoSang;
+    }
+
+    public int getNhietDoToi() {
+        return nhietDoToi;
+    }
+
+    public void setNhietDoToi(int nhietDoToi) {
+        this.nhietDoToi = nhietDoToi;
+    }
+
+    public String getHuongGio() {
+        return huongGio;
+    }
+
+    public void setHuongGio(String huongGio) {
+        this.huongGio = huongGio;
+    }
+
+    public String getMay() {
+        return may;
+    }
+
+    public void setMay(String may) {
+        this.may = may;
     }
 
     public String getTenThanhPho() {

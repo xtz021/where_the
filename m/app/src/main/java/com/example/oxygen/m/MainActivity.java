@@ -6,18 +6,37 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
 
-//    Hàm này lấy sự kiện của nút btn_find
+    @Override
+    protected void onStart() {
+        super.onStart();
+        readData();
+        getday();
+    }
+
+    //    Hàm này lấy sự kiện của nút btn_find
 //    Nhiệm vụ của hàm này là lấy sự kiện sau đó chuyển tới form map
     public Intent intent;
     public void btn_find_click(View view)
@@ -48,5 +67,57 @@ public class MainActivity extends AppCompatActivity {
         myDay4.setText(dayOfWeek[day + 4]);
         myDay5 =findViewById(R.id.day5);
         myDay5.setText(dayOfWeek[day + 5]);
+    }
+//    Chương trình lấy dữ liệu từ web về dạng JSON
+//    Dữ liệu sẽ được sử lý và định dạng lại để sử dụng
+    public void getData()
+    {
+    }
+//    Chương trình lưu dữ liệu
+    private String fileName = "weather.txt";
+//    Sử dụng sau khi chương trình đóng để lưu lại dữ liệu người dùng
+    public void saveData(){
+        ObjectOutputStream oos = null;
+        try
+        {
+            oos = new ObjectOutputStream(new FileOutputStream(fileName));
+            for (detail i: read_file_list)
+            {
+                oos.writeObject(i);
+            }
+        }
+        catch (Exception exception)
+        {
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            try {
+                oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+//    Chương trình đọc dữ liệu từ file đã lưu
+    //Tạo mảng để sau khi đọc dữ liệu sẽ được lưu lại vào mảng
+    List<detail> read_file_list = new ArrayList<detail>();
+    public void readData()
+    {
+        ObjectInputStream ois = null;
+        try
+        {
+            ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileName)));
+            read_file_list.add((detail) ois.readObject());
+        }
+        catch (Exception exception)
+        {
+            Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveData();
     }
 }
