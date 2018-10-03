@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        readData();
-        getday();
+//        readData();
+//        getday();
     }
 
     //    Hàm này lấy sự kiện của nút btn_find
