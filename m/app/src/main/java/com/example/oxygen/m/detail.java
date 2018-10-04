@@ -1,19 +1,35 @@
 package com.example.oxygen.m;
 
+import java.util.Date;
+
 public class detail {
     private String tenThanhPho, toaDo, anh, huongGio, may;
     private int nhietDoSang, nhietDoToi, doAm, luongMua;
+    private Date time_update;
 
-    public detail()
-    {
+    public detail() {
 
     }
 
-    public detail(String tenThanhPho, String toaDo, String anh, String huongGio, String may, int nhietDoSang, int nhietDoToi, int doAm, int luongMua)
-    {
+    public detail(String tenThanhPho, String toaDo, String anh, String huongGio, String may, int nhietDoSang, int nhietDoToi, int doAm, int luongMua, Date time_update) {
         this.tenThanhPho = tenThanhPho;
         this.toaDo = toaDo;
         this.anh = anh;
+        this.huongGio = huongGio;
+        this.may = may;
+        this.nhietDoSang = nhietDoSang;
+        this.nhietDoToi = nhietDoToi;
+        this.doAm = doAm;
+        this.luongMua = luongMua;
+        this.time_update = time_update;
+    }
+
+    public void setTime_update(Date time_update) {
+        this.time_update = time_update;
+    }
+
+    public Date getTime_update() {
+        return time_update;
     }
 
     public int getDoAm() {
@@ -90,6 +106,6 @@ public class detail {
 
     @Override
     public String toString() {
-        return "["+this.toaDo + " - " + this.tenThanhPho+"]";
+        return "[" + this.toaDo + " - " + this.tenThanhPho + "]";
     }
 }

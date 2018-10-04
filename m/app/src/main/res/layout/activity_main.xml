@@ -35,6 +35,14 @@
             android:textAlignment="center"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/DataTimeUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:text="Ngày" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
