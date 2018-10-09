@@ -3,25 +3,31 @@ package com.example.oxygen.m;
 import java.util.Date;
 
 public class detail {
-    private String tenThanhPho, toaDo, anh, huongGio, may;
-    private int nhietDoSang, nhietDoToi, doAm, luongMua;
+    private String tenThanhPho, gio, may, img;
+    private int nhietdo, doAm, luongMua;
+    private float lan, lon;
     private Date time_update;
 
     public detail() {
 
     }
 
-    public detail(String tenThanhPho, String toaDo, String anh, String huongGio, String may, int nhietDoSang, int nhietDoToi, int doAm, int luongMua, Date time_update) {
+    public detail(String tenThanhPho, String gio, String may, int nhietdo, int doAm, int luongMua, Date time_update) {
         this.tenThanhPho = tenThanhPho;
-        this.toaDo = toaDo;
-        this.anh = anh;
-        this.huongGio = huongGio;
+        this.gio = gio;
         this.may = may;
-        this.nhietDoSang = nhietDoSang;
-        this.nhietDoToi = nhietDoToi;
+        this.nhietdo = nhietdo;
         this.doAm = doAm;
         this.luongMua = luongMua;
         this.time_update = time_update;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getImg() {
+        return img;
     }
 
     public void setTime_update(Date time_update) {
@@ -48,28 +54,20 @@ public class detail {
         this.luongMua = luongMua;
     }
 
-    public int getNhietDoSang() {
-        return nhietDoSang;
+    public int getNhietdo() {
+        return nhietdo;
     }
 
-    public void setNhietDoSang(int nhietDoSang) {
-        this.nhietDoSang = nhietDoSang;
+    public void setNhietdo(int nhietdo) {
+        this.nhietdo = nhietdo;
     }
 
-    public int getNhietDoToi() {
-        return nhietDoToi;
+    public void setGio(String gio) {
+        this.gio = gio;
     }
 
-    public void setNhietDoToi(int nhietDoToi) {
-        this.nhietDoToi = nhietDoToi;
-    }
-
-    public String getHuongGio() {
-        return huongGio;
-    }
-
-    public void setHuongGio(String huongGio) {
-        this.huongGio = huongGio;
+    public String getGio() {
+        return gio;
     }
 
     public String getMay() {
@@ -88,24 +86,20 @@ public class detail {
         this.tenThanhPho = tenThanhPho;
     }
 
-    public String getToaDo() {
-        return toaDo;
+    public float getLan() {
+        return lan;
     }
 
-    public void setToaDo(String toaDo) {
-        this.toaDo = toaDo;
+    public void setLan(float lan) {
+        this.lan = lan;
     }
 
-    public String getAnh() {
-        return anh;
+    public float getLon() {
+        return lon;
     }
 
-    public void setAnh(String anh) {
-        this.anh = anh;
+    public void setLon(float lon) {
+        this.lon = lon;
     }
 
-    @Override
-    public String toString() {
-        return "[" + this.toaDo + " - " + this.tenThanhPho + "]";
-    }
 }

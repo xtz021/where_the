@@ -9,7 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class process_json {
-private String url_link = "";
+    private float lat = (float) 21.02, lon = (float) 105.80;
+    private String key = "3d16a65b9059136f7613a73004f636b1";
+    private String url_link = "https://samples.openweathermap.org/data/2.5/forecast?"+"lat="+lat+"&lon="+lon+"&appid="+key;
     public process_json() throws IOException {
         read_JSON();
         getJsonUrl(url_link);
@@ -27,7 +29,7 @@ private String url_link = "";
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
 
-            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(1000);
             urlConnection.setConnectTimeout(15000);
             urlConnection.setDoOutput(true);
@@ -58,10 +60,9 @@ private String url_link = "";
         try {
             obj = new JSONObject();
             //pageString = obj.getJSONObject("pageinfo").getString("pageName");
-            array = obj.getJSONArray("posts");
+            array = obj.getJSONArray("GET");
             for (int i = 0; i < array.length(); ++i) {
-                String post_id = array.getJSONObject(i).getString("posts");
-                System.out.println(post_id);
+                String dt = array.getJSONObject(i).getString("dt");
             }
         } catch (JSONException je) {
 

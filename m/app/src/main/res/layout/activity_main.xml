@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:text="Thêm"
+            android:text="xem danh sach"
+            android:onClick="btn_view_list"
             android:textAlignment="center"/>
     </LinearLayout>
 
@@ -57,7 +58,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:padding="15dp"
-            android:src="@drawable/a" />
+            android:src="@drawable/a01d" />
 
         <LinearLayout
             android:layout_width="200dp"
@@ -119,12 +120,14 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="5">
         <LinearLayout
+            android:layout_weight="1"
             android:layout_width="77dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -142,7 +145,7 @@
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
                 android:padding="10dp"
-                android:src="@drawable/a" />
+                android:src="@drawable/a01d" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -160,6 +163,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_weight="1"
             android:layout_width="77dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -177,7 +181,7 @@
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
                 android:padding="10dp"
-                android:src="@drawable/b" />
+                android:src="@drawable/a02d" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -195,6 +199,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_weight="1"
             android:layout_width="77dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -212,7 +217,7 @@
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
                 android:padding="10dp"
-                android:src="@drawable/c" />
+                android:src="@drawable/a03d" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -230,6 +235,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_weight="1"
             android:layout_width="76dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -247,7 +253,7 @@
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
                 android:padding="10dp"
-                android:src="@drawable/d" />
+                android:src="@drawable/a05d" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -265,6 +271,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_weight="1"
             android:layout_width="76dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -282,7 +289,7 @@
                 android:layout_height="71dp"
                 android:layout_marginTop="30dp"
                 android:padding="10dp"
-                android:src="@drawable/e" />
+                android:src="@drawable/a06d" />
 
             <TextView
                 android:layout_width="match_parent"

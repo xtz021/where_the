@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:contentDescription="@string/item_image"
-        android:src="@drawable/c" />
+        android:src="@drawable/a03d" />
 
     <LinearLayout
         android:layout_width="0dp"
