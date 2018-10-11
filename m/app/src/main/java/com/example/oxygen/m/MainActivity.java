@@ -1,10 +1,8 @@
 package com.example.oxygen.m;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -14,19 +12,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private List<detail> danhsach;
+    private JsonArray sdanhsach = new JsonArray();
+    private String danhSachTam;
+    private Button
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
     // Sử dụng kinh độ và vĩ độ để lấy dữ liệu vị trí thời tiết
     public void getDataUrl() {
         String url = "https://samples.openweathermap.org/data/2.5/forecast/daily?lat=35&lon=139&cnt=10&appid=b1b15e88fa797225412429c1c50c122a1";
-        float lan, lon;
-
+        float lat, lon;
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -69,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
+                        danhSachTam = response.toString();
                         Toast.makeText(MainActivity.this, "Tải nội dung thành công\n" + response.substring(0, 500), Toast.LENGTH_SHORT).show();
                     }
                 }, new Response.ErrorListener() {
@@ -78,6 +75,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
+        listContext();
+    }
+
+    //đưa dữ liệu vào danh sách lưu trữ.
+    public void listContext() {
+        Type type = new TypeToken<detail>() {
+        }.getType();
+        Gson gson = new Gson();
+        List<detail> danh_sach = gson.fromJson(danhSachTam, type);
+        for (detail i : danh_sach) {
+            detail item_detail = new detail(i.getTenThanhPho(), i.getGio(), i.getMay(), i.getDoAm(),
+                    i.getDoAm(), i.getLuongMua(), i.getTime_update());
+            danhsach.add(item_detail);
+        }
     }
 
 }
