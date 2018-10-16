@@ -3,95 +3,53 @@ package com.example.oxygen.m;
 import java.util.Date;
 
 public class detail {
-    private String tenThanhPho, gio, may, img;
-    private int nhietdo, doAm, luongMua;
-    private float lan, lon;
-    private Date time_update;
-
-    public detail() {
-
+    private String CityName, temp, clouds;
+    private float lat, lon;
+    private String Time;
+    public detail(String ha_noi, String temp, String no_clouds, int lat, int lon, int i) {
+        super();
     }
 
-    public detail(String tenThanhPho, String gio, String may, int nhietdo, int doAm, int luongMua, Date time_update) {
-        this.tenThanhPho = tenThanhPho;
-        this.gio = gio;
-        this.may = may;
-        this.nhietdo = nhietdo;
-        this.doAm = doAm;
-        this.luongMua = luongMua;
-        this.time_update = time_update;
+    public detail(String cityName, String temp, String clouds, float lat, float lon, String time) {
+        super();
+        CityName = cityName;
+        this.temp = temp;
+        this.clouds = clouds;
+        this.lat = lat;
+        this.lon = lon;
+        this.Time = time;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public String getCityName() {
+        return CityName;
     }
 
-    public String getImg() {
-        return img;
+    public void setCityName(String cityName) {
+        CityName = cityName;
     }
 
-    public void setTime_update(Date time_update) {
-        this.time_update = time_update;
+    public String getTemp() {
+        return temp;
     }
 
-    public Date getTime_update() {
-        return time_update;
+    public void setTemp(String temp) {
+        this.temp = temp;
     }
 
-    public int getDoAm() {
-        return doAm;
+    public String getClouds() {
+        return clouds;
     }
 
-    public void setDoAm(int doAm) {
-        this.doAm = doAm;
+    public void setClouds(String clouds) {
+        this.clouds = clouds;
     }
 
-    public int getLuongMua() {
-        return luongMua;
+    public float getLat() {
+        return lat;
     }
 
-    public void setLuongMua(int luongMua) {
-        this.luongMua = luongMua;
-    }
-
-    public int getNhietdo() {
-        return nhietdo;
-    }
-
-    public void setNhietdo(int nhietdo) {
-        this.nhietdo = nhietdo;
-    }
-
-    public void setGio(String gio) {
-        this.gio = gio;
-    }
-
-    public String getGio() {
-        return gio;
-    }
-
-    public String getMay() {
-        return may;
-    }
-
-    public void setMay(String may) {
-        this.may = may;
-    }
-
-    public String getTenThanhPho() {
-        return tenThanhPho;
-    }
-
-    public void setTenThanhPho(String tenThanhPho) {
-        this.tenThanhPho = tenThanhPho;
-    }
-
-    public float getLan() {
-        return lan;
-    }
-
-    public void setLan(float lan) {
-        this.lan = lan;
+    public void setLat(float lat) {
+        this.lat = lat;
     }
 
     public float getLon() {
@@ -102,4 +60,11 @@ public class detail {
         this.lon = lon;
     }
 
+    public String getTime() {
+        return Time;
+    }
+
+    public void setTime(String time) {
+        Time = time;
+    }
 }

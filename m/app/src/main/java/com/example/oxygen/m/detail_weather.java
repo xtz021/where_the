@@ -30,8 +30,8 @@ public class detail_weather extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_weather);
 
-        dataInput();
-        show_data();
+//        dataInput();
+//        show_data();
     }
 
     //Chương trình con đổ dữ liệu từ danh sách vào listView
@@ -56,19 +56,19 @@ public class detail_weather extends AppCompatActivity {
     }
 
     //Chương trình con lấy dữ liệu từ mainActivity
-    private void dataInput()
-    {
-        String data = getIntent().getStringExtra("data");
-
-        Gson gson = new Gson();
-
-        Type type = new TypeToken<List<detail>>(){}.getType();
-        List<detail> danhsach = gson.fromJson(data, type);
-        for(detail i: danhsach)
-        {
-            detail item_detail = new detail(i.getTenThanhPho(),i.getGio(),i.getMay(),i.getDoAm(),
-                    i.getDoAm(),i.getLuongMua(),i.getTime_update());
-            danhsach.add(item_detail);
-        }
-    }
+//    private void dataInput()
+//    {
+//        String data = getIntent().getStringExtra("data");
+//
+//        Gson gson = new Gson();
+//
+//        Type type = new TypeToken<List<detail>>(){}.getType();
+//        List<detail> danhsach = gson.fromJson(data, type);
+//        for(detail i: danhsach)
+//        {
+//            detail item_detail = new detail(i.getTenThanhPho(),i.getGio(),i.getMay(),i.getDoAm(),
+//                    i.getDoAm(),i.getLuongMua(),i.getTime_update());
+//            danhsach.add(item_detail);
+//        }
+//    }
 }

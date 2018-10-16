@@ -59,13 +59,12 @@ public class customListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         detail item = this.danhsach.get(position);
-        holder.country.setText(item.getTenThanhPho());
-        holder.date.setText("Ngày: "+item.getTime_update());
-        holder.temp.setText("Nhiệt độ: " + item.getNhietdo());
-        holder.humidity.setText("Độ ẩm: " + item.getDoAm());
-        int image = this.findImageId(item.getImg());
-
-        holder.imageView.setImageResource(image);
+        holder.country.setText(item.getCityName());
+        holder.temp.setText("Nhiệt độ: " + item.getTemp());
+        holder.humidity.setText("Độ ẩm: " + item.getClouds());
+//        int image = this.findImageId(item.getImg());
+//
+//        holder.imageView.setImageResource(image);
         return convertView;
     }
 
