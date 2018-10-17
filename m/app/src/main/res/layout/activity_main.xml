@@ -21,10 +21,7 @@
             android:layout_weight="1"
             android:text="Tìm kiếm"
             android:textAlignment="center"
-            android:textStyle="bold"
-            android:onClick="btn_find_click"
-            android:clickable="true"
-            tools:ignore="OnClick" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/btn_add"

@@ -1,8 +1,11 @@
 package com.example.oxygen.m;
 
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvCity, tvTemp, tvHumid, tvWind, tvCloud, tvDate;
     private ArrayList<detail> listThoiTiet = new ArrayList<>();
     private String FileName = "note.txt";
-
+    private TextView findClick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         getControl();
         //Chạy chương trình lấy dữ liệu từ file.
         read_file_data();
-        detail a = new detail("Ha Noi", "21", "no clouds", 125,21,12121212);
+        detail a = new detail("Ha Noi", "21", "no clouds", 125, 21, 12121212);
         listThoiTiet.add(a);
         if (listThoiTiet.size() == 0) {
             Toast.makeText(this, "Chưa có dữ liệu\n" +
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                     "Cảm ơn.", Toast.LENGTH_SHORT).show();
         } else {
             //Nếu có dữ liệu sẽ lấy đối tượng đầu tiên mang ra để hiện thị màn hình chính.
-            String lat = Float.toString(listThoiTiet.get(0).getLat()) ;
+            String lat = Float.toString(listThoiTiet.get(0).getLat());
             String lon = Float.toString(listThoiTiet.get(0).getLon());
             getDataUrl(lat, lon);
         }
@@ -54,16 +57,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        findClick = (TextView) findViewById(R.id.btn_find);
+        findClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     protected void getControl() {
-        tvDate = (TextView) findViewById(R.id.DataTimeUpdate);
-        tvCity = (TextView) findViewById(R.id.City);
-        tvTemp = (TextView) findViewById(R.id.temp);
-        tvHumid = (TextView) findViewById(R.id.humidity);
-        tvWind = (TextView) findViewById(R.id.wind);
-        tvCloud = (TextView) findViewById(R.id.clouds);
-        listThoiTiet = new ArrayList<detail>();
+        tvDate = findViewById(R.id.DataTimeUpdate);
+        tvCity = findViewById(R.id.City);
+        tvTemp = findViewById(R.id.temp);
+        tvHumid = findViewById(R.id.humidity);
+        tvWind = findViewById(R.id.wind);
+        tvCloud = findViewById(R.id.clouds);
+        listThoiTiet = new ArrayList<>();
     }
 
 
@@ -99,18 +110,16 @@ public class MainActivity extends AppCompatActivity {
             }
             Toast.makeText(this, "Lưu file thành công.", Toast.LENGTH_SHORT).show();
         } catch (Exception err) {
-            Toast.makeText(this, "Lỗi: " + err, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi ghi file: " + err, Toast.LENGTH_SHORT).show();
         } finally {
-            if(oos != null)
-            {
+            if (oos != null) {
                 try {
                     oos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if(fos != null)
-            {
+            if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
@@ -132,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 listThoiTiet.add((detail) ois.readObject());
             }
         } catch (IOException e) {
-            Toast.makeText(this, "Lỗi: " + e, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi đọc file: " + e, Toast.LENGTH_SHORT).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -152,12 +161,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     //============================================================================================//
     // Lấy thông tin từ OpenWeatherMap
     // Sử dụng kinh độ và vĩ độ để lấy dữ liệu vị trí thời tiết
     public void getDataUrl(String lat, String lon) {
-        String url = "http://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&units=metric&appid=be8d3e323de722ff78208a7dbb2dcd6f";
+        String url = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=" +
+                "metric&appid=be8d3e323de722ff78208a7dbb2dcd6f";
         //Viết nốt check lat lon trong dãy
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -167,19 +176,23 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        Toast.makeText(MainActivity.this, "Tải nội dung thành công\n" + response.toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Tải nội dung thành công\n"
+                        //       + response, Toast.LENGTH_SHORT).show();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             //lấy tên thành phố
                             String name = jsonObject.getString("name");
-                            tvCity.setText("Thành phố: " + name);
+                            name = "Thành phố" + name;
+                            tvCity.setText(name);
 
                             //lấy ngày tháng update
                             String day = jsonObject.getString("dt");
                             //xử lý format ngày tháng từ JSON
                             long l = Long.valueOf(day);
-                            Date date = new Date(l * 1000L);
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE yyyy-MM-dd");
+                            Date date;
+                            date = new Date(l * 1000L);
+                            SimpleDateFormat simpleDateFormat;
+                            simpleDateFormat = new SimpleDateFormat("EEEE yyyy-MM-dd");
                             String Day = simpleDateFormat.format(date);
                             tvDate.setText(Day);
 
@@ -190,26 +203,20 @@ public class MainActivity extends AppCompatActivity {
 
                             Double a = Double.valueOf(nhietDo);
                             String NhietDo = String.valueOf(a.intValue());
-                            tvTemp.setText("Nhiệt độ: " + NhietDo + "°C");
-                            tvHumid.append("Độ ẩm: " + doAm + "%");
+                            NhietDo = "Nhiệt độ: " + NhietDo + "°C";
+                            tvTemp.setText(NhietDo);
+                            tvHumid.setText("Độ ẩm: " + doAm + "%");
 
                             //lấy độ gió, mây
                             JSONObject jsonObjectWind = jsonObject.getJSONObject("wind");
                             String gio = jsonObjectWind.getString("speed");
-                            tvWind.setText("Độ gió: " + gio + "m/s");
+                            gio = "Độ gió: " + gio + "m/s";
+                            tvWind.setText(gio);
 
                             JSONObject jsonObjectCloud = jsonObject.getJSONObject("clouds");
                             String may = jsonObjectCloud.getString("all");
-                            tvCloud.setText("Mây: " + may + "%");
-
-//                            for (WeatherObject wo:listThoiTiet)
-//                            {
-//                                if(wo.getLat().equals(lat)==1 && wo.getLon().equals(lon)==1)
-//                                {
-//                                    WeatherObject wObject = new WeatherObject(Day,name,NhietDo,doAm,gio,may);
-//                                    listThoiTiet.add(wObject);
-//                                }
-//                            }
+                            may = "Mây: " + may + "%";
+                            tvCloud.setText(may);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -217,10 +224,9 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Lỗi rồi thằng đần.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Lỗi lấy dữ liệu rồi thằng đần.",Toast.LENGTH_SHORT).show();
             }
         });
         queue.add(stringRequest);
     }
-
 }
