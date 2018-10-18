@@ -1,9 +1,13 @@
 package com.example.oxygen.m;
 
+import java.util.ArrayList;
+
 public class WeatherObject {
     private String lat,lon, date, city, temp, humid, wind, cloud;
+    private ArrayList<NextDaysObject> list5Ngay = new ArrayList<>();
 
-    public WeatherObject(String lat, String lon, String date, String city, String temp, String humid, String wind, String cloud) {
+    public WeatherObject(String lat, String lon, String date, String city, String temp,
+                         String humid, String wind, String cloud, ArrayList<NextDaysObject> list5Ngay) {
         this.lat = lat;
         this.lon = lon;
         this.date = date;
@@ -12,6 +16,7 @@ public class WeatherObject {
         this.humid = humid;
         this.wind = wind;
         this.cloud = cloud;
+        this.list5Ngay = list5Ngay;
     }
 
     public WeatherObject(String lat, String lon) {
@@ -19,13 +24,15 @@ public class WeatherObject {
         this.lon = lon;
     }
 
-    public WeatherObject(String date, String city, String temp, String humid, String wind, String cloud) {
+    public WeatherObject(String date, String city, String temp, String humid, String wind,
+                         String cloud, ArrayList<NextDaysObject> list5Ngay) {
         this.date = date;
         this.city = city;
         this.temp = temp;
         this.humid = humid;
         this.wind = wind;
         this.cloud = cloud;
+        this.list5Ngay = list5Ngay;
     }
 
     public WeatherObject() {
@@ -35,6 +42,14 @@ public class WeatherObject {
         this.humid = "";
         this.wind = "";
         this.cloud = "";
+    }
+
+    public ArrayList<NextDaysObject> getList5Ngay() {
+        return list5Ngay;
+    }
+
+    public void setList5Ngay(ArrayList<NextDaysObject> list5Ngay) {
+        this.list5Ngay = list5Ngay;
     }
 
     public String getLat() {

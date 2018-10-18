@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
@@ -28,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-
+    ArrayList<NextDaysObject> listNextDays;
     private TextView tvCity, tvTemp, tvHumid, tvWind, tvCloud, tvDate;
-    private ArrayList<detail> listThoiTiet = new ArrayList<>();
+    private ArrayList<WeatherObject> listThoiTiet = new ArrayList<>();
     private String FileName = "note.txt";
     private TextView findClick;
     @Override
@@ -39,19 +40,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getControl();
         //Chạy chương trình lấy dữ liệu từ file.
+        getDataUrl("35", "139");
+        write_file_data(listThoiTiet);
         read_file_data();
-        detail a = new detail("Ha Noi", "21", "no clouds", 125, 21, 12121212);
-        listThoiTiet.add(a);
-        if (listThoiTiet.size() == 0) {
-            Toast.makeText(this, "Chưa có dữ liệu\n" +
-                    "Bạn vui lòng thêm thành phố muốn theo dỗi.\n" +
-                    "Cảm ơn.", Toast.LENGTH_SHORT).show();
-        } else {
-            //Nếu có dữ liệu sẽ lấy đối tượng đầu tiên mang ra để hiện thị màn hình chính.
-            String lat = Float.toString(listThoiTiet.get(0).getLat());
-            String lon = Float.toString(listThoiTiet.get(0).getLon());
-            getDataUrl(lat, lon);
-        }
+        showWeather();
+//        if (listThoiTiet.size() == 0) {
+//            Toast.makeText(this, "Chưa có dữ liệu\n" +
+//                    "Bạn vui lòng thêm thành phố muốn theo dỗi.\n" +
+//                    "Cảm ơn.", Toast.LENGTH_SHORT).show();
+//        } else {
+//            //Nếu có dữ liệu sẽ lấy đối tượng đầu tiên mang ra để hiện thị màn hình chính.
+//        }
     }
 
     @Override
@@ -98,19 +97,19 @@ public class MainActivity extends AppCompatActivity {
 
     //============================================================================================//
     // Chương trình con lưu và lấy dữ liệu từ file
-    private void write_file_data(ArrayList<detail> data) {
+    private void write_file_data(ArrayList<WeatherObject> data) {
         //Ghi file.
         FileOutputStream fos = null;
         ObjectOutputStream oos = null;
         try {
             fos = this.openFileOutput(FileName, MODE_PRIVATE);
             oos = new ObjectOutputStream(fos);
-            for (detail i : data) {
+            for (WeatherObject i : data) {
                 oos.writeObject(i);
             }
             Toast.makeText(this, "Lưu file thành công.", Toast.LENGTH_SHORT).show();
         } catch (Exception err) {
-            Toast.makeText(this, "Lỗi ghi file: " + err, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi ghi file: " + err, Toast.LENGTH_LONG).show();
         } finally {
             if (oos != null) {
                 try {
@@ -138,10 +137,10 @@ public class MainActivity extends AppCompatActivity {
             fis = this.openFileInput(FileName);
             ois = new ObjectInputStream(fis);
             while (ois.readObject() == null) {
-                listThoiTiet.add((detail) ois.readObject());
+                listThoiTiet.add((WeatherObject) ois.readObject());
             }
         } catch (IOException e) {
-            Toast.makeText(this, "Lỗi đọc file: " + e, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi đọc file: " + e, Toast.LENGTH_LONG).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -161,12 +160,45 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private int checkList(String lat, String lon)
+    {
+        if (listThoiTiet.size() > 0)
+        {
+            int count = 0;
+            for(WeatherObject wo : listThoiTiet)
+            {
+                if (wo.getLat().equals(lat) && wo.getLon().equals(lon))
+                {
+                    return count;
+                }
+                count++;
+            }
+        }
+        return -1;
+    }
+
+
+    public void showWeather()
+    {
+        for (WeatherObject wo: listThoiTiet)
+        {
+            tvCity.setText("Thành phố: "+wo.getCity());
+            tvDate.setText(wo.getDate());
+            tvTemp.setText("Nhiệt độ: " + wo.getTemp()+"°C");
+            tvHumid.setText("Độ ẩm: " + wo.getHumid() + "%");
+            tvWind.setText("Độ gió: " + wo.getWind() + "m/s");
+            tvCloud.setText("Mây: " + wo.getCloud() + "%");
+        }
+    }
+
     //============================================================================================//
     // Lấy thông tin từ OpenWeatherMap
     // Sử dụng kinh độ và vĩ độ để lấy dữ liệu vị trí thời tiết
     public void getDataUrl(String lat, String lon) {
         String url = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=" +
                 "metric&appid=be8d3e323de722ff78208a7dbb2dcd6f";
+        final String lt = lat, ln = lon;
         //Viết nốt check lat lon trong dãy
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -182,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             //lấy tên thành phố
                             String name = jsonObject.getString("name");
-                            name = "Thành phố" + name;
-                            tvCity.setText(name);
 
                             //lấy ngày tháng update
                             String day = jsonObject.getString("dt");
@@ -194,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
                             SimpleDateFormat simpleDateFormat;
                             simpleDateFormat = new SimpleDateFormat("EEEE yyyy-MM-dd");
                             String Day = simpleDateFormat.format(date);
-                            tvDate.setText(Day);
 
                             //lấy nhiệt độ, độ ẩm
                             JSONObject jsonObjectMain = jsonObject.getJSONObject("main");
@@ -203,20 +232,30 @@ public class MainActivity extends AppCompatActivity {
 
                             Double a = Double.valueOf(nhietDo);
                             String NhietDo = String.valueOf(a.intValue());
-                            NhietDo = "Nhiệt độ: " + NhietDo + "°C";
-                            tvTemp.setText(NhietDo);
-                            tvHumid.setText("Độ ẩm: " + doAm + "%");
 
                             //lấy độ gió, mây
                             JSONObject jsonObjectWind = jsonObject.getJSONObject("wind");
                             String gio = jsonObjectWind.getString("speed");
-                            gio = "Độ gió: " + gio + "m/s";
-                            tvWind.setText(gio);
 
                             JSONObject jsonObjectCloud = jsonObject.getJSONObject("clouds");
                             String may = jsonObjectCloud.getString("all");
-                            may = "Mây: " + may + "%";
-                            tvCloud.setText(may);
+
+                            ArrayList<NextDaysObject> list5Ngay = getNextDaysDataUrl(lt,ln);
+
+                            //Thêm vào list
+                            if(!name.equals(""))
+                            {
+                                int i = checkList(lt,ln);
+                                WeatherObject wo = new WeatherObject(lt,ln,Day,name,nhietDo,doAm,gio,may,list5Ngay);
+                                if(i<0)
+                                {
+                                    listThoiTiet.add(wo);
+                                }
+                                else {
+                                    listThoiTiet.set(i,wo);
+                                }
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -228,5 +267,63 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
+    }
+
+    public ArrayList<NextDaysObject> getNextDaysDataUrl(String lat, String lon)
+    {
+
+        String url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+
+                lon+"&units=metric&cnt=5&appid=be8d3e323de722ff78208a7dbb2dcd6f";
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                listNextDays = new ArrayList<>();
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    JSONArray jsonArray = jsonObject.getJSONArray("list");
+                    for (int i=0; i< jsonArray.length();i++) {
+                        JSONObject jsonObjectList = jsonArray.getJSONObject(i);
+
+                        //Lấy date và format ngày
+                        String ngay = jsonObjectList.getString("dt");
+                        long l = Long.valueOf(ngay);
+                        Date date = new Date(l * 1000L);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        String Day = simpleDateFormat.format(date);
+
+                        //Nhiệt độ
+                        JSONObject jsonObjectTemp = jsonObjectList.getJSONObject("temp");
+                        String tempDay = jsonObjectTemp.getString("day");
+                        String tempNight = jsonObjectTemp.getString("night");
+
+                        //Trạn thái thời tiết
+                        JSONObject jsonObjectWeather = jsonObjectList.getJSONObject("weather");
+                        String status = jsonObjectWeather.getString("main");
+                        String icon = jsonObjectWeather.getString("icon");
+
+                        //Thêm vào List
+                        if(!Day.equals(""))
+                        {
+                            NextDaysObject ndo = new NextDaysObject(Day,tempDay,tempNight,status,icon);
+                            listNextDays.add(ndo);
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                } catch (Exception e)
+                {
+                    Toast.makeText(MainActivity.this, "Lỗi khi đang lấy dữ liệu: \n" + e.toString(), Toast.LENGTH_LONG);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Xảy ra sự cố lấy dữ liệu!!!", Toast.LENGTH_LONG);
+            }
+        });
+        return listNextDays;
     }
 }
