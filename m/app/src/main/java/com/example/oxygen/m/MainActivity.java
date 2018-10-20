@@ -1,15 +1,7 @@
 package com.example.oxygen.m;
 
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,9 +15,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,41 +33,37 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvCity, tvTemp, tvHumid, tvWind, tvCloud, tvDate;
     private ArrayList<WeatherObject> listThoiTiet = new ArrayList<>();
     private String FileName = "note.txt";
-    private TextView findClick, viewClick;
-    private Intent intent;
-    private int lat;
-    private int lon;
-
-
+    private TextView findClick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getControl();
+        //Chạy chương trình lấy dữ liệu từ file.
+        getDataUrl("35", "139");
+        write_file_data(listThoiTiet);
         read_file_data();
         showWeather();
+//        if (listThoiTiet.size() == 0) {
+//            Toast.makeText(this, "Chưa có dữ liệu\n" +
+//                    "Bạn vui lòng thêm thành phố muốn theo dỗi.\n" +
+//                    "Cảm ơn.", Toast.LENGTH_SHORT).show();
+//        } else {
+//            //Nếu có dữ liệu sẽ lấy đối tượng đầu tiên mang ra để hiện thị màn hình chính.
+//        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         findClick = (TextView) findViewById(R.id.btn_find);
-        viewClick = (TextView) findViewById(R.id.btn_add);
-        viewClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(MainActivity.this, detail_weather.class);
-                startActivity(intent);
-            }
-        });
         findClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(MainActivity.this, MapsActivity.class);
+                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                 startActivity(intent);
             }
         });
-
     }
 
     protected void getControl() {
@@ -110,10 +95,6 @@ public class MainActivity extends AppCompatActivity {
         getDataUrl("21", "21");
     }
 
-    //Lấy vị trí tọa độ.
-    //Chỉ dùng ngay khi bật app lần đầu.
-    MapsActivity map = new MapsActivity();
-
     //============================================================================================//
     // Chương trình con lưu và lấy dữ liệu từ file
     private void write_file_data(ArrayList<WeatherObject> data) {
@@ -126,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             for (WeatherObject i : data) {
                 oos.writeObject(i);
             }
-            //Toast.makeText(this, "Lưu file thành công.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lưu file thành công.", Toast.LENGTH_SHORT).show();
         } catch (Exception err) {
             Toast.makeText(this, "Lỗi ghi file: " + err, Toast.LENGTH_LONG).show();
         } finally {
@@ -155,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             fis = this.openFileInput(FileName);
             ois = new ObjectInputStream(fis);
-            while (ois.readObject() != null) {
+            while (ois.readObject() == null) {
                 listThoiTiet.add((WeatherObject) ois.readObject());
             }
         } catch (IOException e) {
@@ -180,11 +161,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private int checkList(String lat, String lon) {
-        if (listThoiTiet.size() > 0) {
+    private int checkList(String lat, String lon)
+    {
+        if (listThoiTiet.size() > 0)
+        {
             int count = 0;
-            for (WeatherObject wo : listThoiTiet) {
-                if (wo.getLat().equals(lat) && wo.getLon().equals(lon)) {
+            for(WeatherObject wo : listThoiTiet)
+            {
+                if (wo.getLat().equals(lat) && wo.getLon().equals(lon))
+                {
                     return count;
                 }
                 count++;
@@ -194,11 +179,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void showWeather() {
-        for (WeatherObject wo : listThoiTiet) {
-            tvCity.setText("Thành phố: " + wo.getCity());
+    public void showWeather()
+    {
+        for (WeatherObject wo: listThoiTiet)
+        {
+            tvCity.setText("Thành phố: "+wo.getCity());
             tvDate.setText(wo.getDate());
-            tvTemp.setText("Nhiệt độ: " + wo.getTemp() + "°C");
+            tvTemp.setText("Nhiệt độ: " + wo.getTemp()+"°C");
             tvHumid.setText("Độ ẩm: " + wo.getHumid() + "%");
             tvWind.setText("Độ gió: " + wo.getWind() + "m/s");
             tvCloud.setText("Mây: " + wo.getCloud() + "%");
@@ -253,16 +240,19 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonObjectCloud = jsonObject.getJSONObject("clouds");
                             String may = jsonObjectCloud.getString("all");
 
-                            ArrayList<NextDaysObject> list5Ngay = getNextDaysDataUrl(lt, ln);
+                            ArrayList<NextDaysObject> list5Ngay = getNextDaysDataUrl(lt,ln);
 
                             //Thêm vào list
-                            if (!name.equals("")) {
-                                int i = checkList(lt, ln);
-                                WeatherObject wo = new WeatherObject(lt, ln, Day, name, nhietDo, doAm, gio, may, list5Ngay);
-                                if (i < 0) {
+                            if(!name.equals(""))
+                            {
+                                int i = checkList(lt,ln);
+                                WeatherObject wo = new WeatherObject(lt,ln,Day,name,nhietDo,doAm,gio,may,list5Ngay);
+                                if(i<0)
+                                {
                                     listThoiTiet.add(wo);
-                                } else {
-                                    listThoiTiet.set(i, wo);
+                                }
+                                else {
+                                    listThoiTiet.set(i,wo);
                                 }
                             }
 
@@ -273,16 +263,17 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Lỗi lấy dữ liệu rồi thằng đần.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Lỗi lấy dữ liệu rồi thằng đần.",Toast.LENGTH_SHORT).show();
             }
         });
         queue.add(stringRequest);
     }
 
-    public ArrayList<NextDaysObject> getNextDaysDataUrl(String lat, String lon) {
+    public ArrayList<NextDaysObject> getNextDaysDataUrl(String lat, String lon)
+    {
 
-        String url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=" + lat + "&lon=" +
-                lon + "&units=metric&cnt=5&appid=be8d3e323de722ff78208a7dbb2dcd6f";
+        String url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+
+                lon+"&units=metric&cnt=5&appid=be8d3e323de722ff78208a7dbb2dcd6f";
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -292,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
 
                     JSONArray jsonArray = jsonObject.getJSONArray("list");
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i=0; i< jsonArray.length();i++) {
                         JSONObject jsonObjectList = jsonArray.getJSONObject(i);
 
                         //Lấy date và format ngày
@@ -313,14 +304,17 @@ public class MainActivity extends AppCompatActivity {
                         String icon = jsonObjectWeather.getString("icon");
 
                         //Thêm vào List
-                        if (!Day.equals("")) {
-                            NextDaysObject ndo = new NextDaysObject(Day, tempDay, tempNight, status, icon);
+                        if(!Day.equals(""))
+                        {
+                            NextDaysObject ndo = new NextDaysObject(Day,tempDay,tempNight,status,icon);
                             listNextDays.add(ndo);
-                        } else {
+                        }
+                        else {
                             break;
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                     Toast.makeText(MainActivity.this, "Lỗi khi đang lấy dữ liệu: \n" + e.toString(), Toast.LENGTH_LONG);
                 }
             }
