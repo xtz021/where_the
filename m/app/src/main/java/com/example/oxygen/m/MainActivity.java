@@ -23,6 +23,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,12 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private String FileName = "note.txt";
     private TextView findClick, viewClick;
     private Intent intent;
-    private Location location;
-    private LocationManager locationManager;
-    private Criteria criteria;
     private int lat;
     private int lon;
-    public static final int REQUEST_LOCATION = 1;
 
 
     @Override
@@ -57,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getControl();
         read_file_data();
-
         showWeather();
     }
 
@@ -80,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        getLocation();
 
     }
 
@@ -117,34 +112,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Lấy vị trí tọa độ.
     //Chỉ dùng ngay khi bật app lần đầu.
-    private void getLocation() {
-        criteria = new Criteria();
+    MapsActivity map = new MapsActivity();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        } else {
-            location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-            if (location != null) {
-                lat = (int) location.getLatitude();
-                lon = (int) location.getLongitude();
-                Toast.makeText(this, "Tọa độ của bạn: "+lat+"  "+ lon, Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(this, "Lỗi lấy vị trí hiện tại.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch (requestCode){
-            case REQUEST_LOCATION   :
-                getLocation();
-                break;
-        }
-    }
     //============================================================================================//
     // Chương trình con lưu và lấy dữ liệu từ file
     private void write_file_data(ArrayList<WeatherObject> data) {
@@ -157,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             for (WeatherObject i : data) {
                 oos.writeObject(i);
             }
-            Toast.makeText(this, "Lưu file thành công.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Lưu file thành công.", Toast.LENGTH_SHORT).show();
         } catch (Exception err) {
             Toast.makeText(this, "Lỗi ghi file: " + err, Toast.LENGTH_LONG).show();
         } finally {
@@ -186,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             fis = this.openFileInput(FileName);
             ois = new ObjectInputStream(fis);
-            while (ois.readObject() == null) {
+            while (ois.readObject() != null) {
                 listThoiTiet.add((WeatherObject) ois.readObject());
             }
         } catch (IOException e) {

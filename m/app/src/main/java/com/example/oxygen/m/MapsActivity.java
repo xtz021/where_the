@@ -3,19 +3,27 @@ package com.example.oxygen.m;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,192 +32,176 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "MapActivity";
+
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
+
+    //vars
+    private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
-    private ProgressDialog myPrgress;
-
-    private static final String MYTAG = "mytag";
-    public static final int REQUEST_LOCATION = 1;
-
-    public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private EditText mSearchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        //Make progress bar
-        myPrgress = new ProgressDialog(this);
-        myPrgress.setTitle("Map loading ...");
-        myPrgress.setMessage("please wait ...");
-        myPrgress.setCancelable(true);
-        //Show progress bar
-        myPrgress.show();
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                onMyMapReady(googleMap);
-            }
-        });
+        mSearchText = (EditText) findViewById(R.id.editText);
+        getLocationPermission();
     }
 
-    private void onMyMapReady(GoogleMap googleMap) {
-        //Lấy đối tượng google map
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
-        //Thiết lập sự kiên lấy map thanh công
-        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-                //Đã tải map thành công.
-                myPrgress.dismiss();
-                //Hiển thị vị trí người dùng.
-                askPermissionAndShowMyLocation();
-            }
-        });
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        }else{
-            mMap.setMyLocationEnabled(true);
-        }
-    }
 
-    private void askPermissionAndShowMyLocation() {
-        // Với API >= 23, bạn phải hỏi người dùng cho phép xem vị trí của họ.
-        if (Build.VERSION.SDK_INT >= 23) {
-            int accessCoarsePermission
-                    = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-            int accessFinePermission
-                    = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (mLocationPermissionsGranted) {
+            getDeviceLocation();
 
-
-            if (accessCoarsePermission != PackageManager.PERMISSION_GRANTED
-                    || accessFinePermission != PackageManager.PERMISSION_GRANTED) {
-
-                // Các quyền cần người dùng cho phép.
-                String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION};
-
-                // Hiển thị một Dialog hỏi người dùng cho phép các quyền trên.
-                ActivityCompat.requestPermissions(this, permissions,
-                        REQUEST_ID_ACCESS_COURSE_FINE_LOCATION);
-
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-        }
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-        // Hiển thị vị trí hiện thời trên bản đồ.
-        this.showMyLocation();
+            init();
+        }
     }
-    //Khi người dùng cấp quyền.(Cho phép hoặc từ chối)
+
+    private void init() {
+        Log.d(TAG, "init: initializing");
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+                    getlocate();
+                }
+                return false;
+            }
+        });
+    }
+
+    private void getlocate() {
+        Log.d(TAG, "getlocate: geolocating");
+
+        String searchString = mSearchText.getText().toString();
+        Geocoder geocoder = new Geocoder(MapsActivity.this);
+        List<Address> list = new ArrayList<>();
+        try {
+            list = geocoder.getFromLocationName(searchString, 1);
+        } catch (IOException e) {
+            Log.e(TAG, "getlocate: IOException" + e.getMessage());
+        }
+        if (list.size() > 0) {
+            Address address = list.get(0);
+            Log.d(TAG, "getlocate: " + address.toString());
+        }
+    }
+
+    private void getDeviceLocation() {
+        Log.d(TAG, "getDeviceLocation: getting the devices current location");
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try {
+            if (mLocationPermissionsGranted) {
+
+                final Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: found location!");
+                            Location currentLocation = (Location) task.getResult();
+
+                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                    DEFAULT_ZOOM);
+
+                        } else {
+                            Log.d(TAG, "onComplete: current location is null");
+                            Toast.makeText(MapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
+        }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom) {
+        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    }
+
+    private void initMap() {
+        Log.d(TAG, "initMap: initializing map");
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(MapsActivity.this);
+    }
+
+    private void getLocationPermission() {
+        Log.d(TAG, "getLocationPermission: getting location permissions");
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionsGranted = true;
+                initMap();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        permissions,
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "onRequestPermissionsResult: called.");
+        mLocationPermissionsGranted = false;
+
         switch (requestCode) {
-            case REQUEST_ID_ACCESS_COURSE_FINE_LOCATION: {
-                //Yêu cầu được bỏ qua mảng gán giá trị rỗng.
-                if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-                    //Hiện vị trí hiện thời lên bản đồ.
-                    this.showMyLocation();
-                } else {
-                    Toast.makeText(this, "Permisson denied.", Toast.LENGTH_SHORT).show();
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < grantResults.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            mLocationPermissionsGranted = false;
+                            Log.d(TAG, "onRequestPermissionsResult: permission failed");
+                            return;
+                        }
+                    }
+                    Log.d(TAG, "onRequestPermissionsResult: permission granted");
+                    mLocationPermissionsGranted = true;
+                    //initialize our map
+                    initMap();
                 }
-                break;
             }
         }
     }
-
-    //Tìm vị trí nhà cung cấp  vị trí hiện thời được mở.
-    private String getEnabledLocationProvier() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //Tiêu chí tìm nhà cung cấp vị trí
-        Criteria criteria = new Criteria();
-        //Tìm nhà cung cấp dịch vụ tốt nhất.
-        //GPS, Network,...
-        String bestProvider = locationManager.getBestProvider(criteria, true);
-        boolean enabled = locationManager.isProviderEnabled(bestProvider);
-        if (!enabled) {
-            Toast.makeText(this, "No location Provider enabled", Toast.LENGTH_SHORT).show();
-            Log.i(MYTAG, "No location provider enabled");
-            return null;
-        }
-        return bestProvider;
-    }
-
-    //Chỉ gọi phương thức này khi có quyền truy cập vị trí người dùng.
-    private void showMyLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        String locationProvider = this.getEnabledLocationProvier();
-        if (locationProvider == null) {
-            return;
-        }
-
-        //milisecord
-        final long MIN_TIME_BW_UPDATES = 1000;
-        //Met
-        final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
-
-        Location myLocation = null;
-        try {
-
-            // Đoạn code nay cần người dùng cho phép (Hỏi ở trên ***).
-            locationManager.requestLocationUpdates(
-                    locationProvider,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES, (LocationListener) this);
-
-            // Lấy ra vị trí.
-            myLocation = locationManager
-                    .getLastKnownLocation(locationProvider);
-        }
-        // Với Android API >= 23 phải catch SecurityException.
-        catch (SecurityException e) {
-            Toast.makeText(this, "Show My Location Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.e(MYTAG, "Show My Location Error:" + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-
-        if (myLocation != null) {
-
-            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLng)             // Sets the center of the map to location user
-                    .zoom(15)                   // Sets the zoom
-                    .bearing(90)                // Sets the orientation of the camera to east
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-            // Thêm Marker cho Map:
-            MarkerOptions option = new MarkerOptions();
-            option.title("My Location");
-            option.snippet("....");
-            option.position(latLng);
-            Marker currentMarker = mMap.addMarker(option);
-            currentMarker.showInfoWindow();
-        } else {
-            Toast.makeText(this, "Location not found!", Toast.LENGTH_LONG).show();
-            Log.i(MYTAG, "Location not found");
-        }
-    }
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
-
 }
