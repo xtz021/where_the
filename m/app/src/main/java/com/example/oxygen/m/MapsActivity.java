@@ -31,6 +31,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ProgressDialog myPrgress;
 
     private static final String MYTAG = "mytag";
+    public static final int REQUEST_LOCATION = 1;
 
     public static final int REQUEST_ID_ACCESS_COURSE_FINE_LOCATION = 100;
 
@@ -66,22 +67,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Đã tải map thành công.
                 myPrgress.dismiss();
                 //Hiển thị vị trí người dùng.
-                //askPermissionAndShowMyLocation();
+                askPermissionAndShowMyLocation();
             }
         });
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        }else{
+            mMap.setMyLocationEnabled(true);
         }
-        mMap.setMyLocationEnabled(true);
     }
 
     private void askPermissionAndShowMyLocation() {
