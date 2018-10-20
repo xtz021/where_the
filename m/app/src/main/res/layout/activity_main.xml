@@ -125,7 +125,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/day1"
+                android:id="@+id/date1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="day1"
@@ -140,6 +140,7 @@
                 android:src="@drawable/a01d" />
 
             <TextView
+                android:id="@+id/tempday1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -147,6 +148,7 @@
                 android:textAlignment="center" />
 
             <TextView
+                android:id="@+id/tempnight1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -161,7 +163,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/day2"
+                android:id="@+id/date2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="day2"
@@ -176,6 +178,7 @@
                 android:src="@drawable/a02d" />
 
             <TextView
+                android:id="@+id/tempday2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -183,6 +186,7 @@
                 android:textAlignment="center" />
 
             <TextView
+                android:id="@+id/tempnight2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -197,7 +201,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/day3"
+                android:id="@+id/date3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="day3"
@@ -212,6 +216,7 @@
                 android:src="@drawable/a03d" />
 
             <TextView
+                android:id="@+id/tempday3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -219,6 +224,7 @@
                 android:textAlignment="center" />
 
             <TextView
+                android:id="@+id/tempnight3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -233,7 +239,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/day4"
+                android:id="@+id/date4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="day4"
@@ -248,6 +254,7 @@
                 android:src="@drawable/a05d" />
 
             <TextView
+                android:id="@+id/tempday4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -255,6 +262,7 @@
                 android:textAlignment="center" />
 
             <TextView
+                android:id="@+id/tempnight4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -269,7 +277,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/day5"
+                android:id="@+id/date5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="day5"
@@ -284,6 +292,7 @@
                 android:src="@drawable/a06d" />
 
             <TextView
+                android:id="@+id/tempday5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -291,6 +300,7 @@
                 android:textAlignment="center" />
 
             <TextView
+                android:id="@+id/tempnight5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"

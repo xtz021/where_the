@@ -31,6 +31,8 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     ArrayList<NextDaysObject> listNextDays;
     private TextView tvCity, tvTemp, tvHumid, tvWind, tvCloud, tvDate;
+    private TextView tvDate1, tvDate2, tvDate3, tvDate4, tvDate5;
+    private TextView tvDay1, tvDay2, tvDay3, tvDay4, tvDay5, tvNight1, tvNight2, tvNight3, tvNight4, tvNight5;
     private ArrayList<WeatherObject> listThoiTiet = new ArrayList<>();
     private String FileName = "note.txt";
     private TextView findClick;
@@ -38,12 +40,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        listThoiTiet = new ArrayList<>();
         getControl();
         //Chạy chương trình lấy dữ liệu từ file.
         getDataUrl("35", "139");
         write_file_data(listThoiTiet);
         read_file_data();
-        showWeather();
+        showWeather("35", "139");
 //        if (listThoiTiet.size() == 0) {
 //            Toast.makeText(this, "Chưa có dữ liệu\n" +
 //                    "Bạn vui lòng thêm thành phố muốn theo dỗi.\n" +
@@ -73,7 +76,24 @@ public class MainActivity extends AppCompatActivity {
         tvHumid = findViewById(R.id.humidity);
         tvWind = findViewById(R.id.wind);
         tvCloud = findViewById(R.id.clouds);
-        listThoiTiet = new ArrayList<>();
+
+        tvDate1 = findViewById(R.id.date1);
+        tvDate2 = findViewById(R.id.date2);
+        tvDate3 = findViewById(R.id.date3);
+        tvDate4 = findViewById(R.id.date4);
+        tvDate5 = findViewById(R.id.date5);
+
+        tvDay1 = findViewById(R.id.tempday1);
+        tvDay2 = findViewById(R.id.tempday2);
+        tvDay3 = findViewById(R.id.tempday3);
+        tvDay4 = findViewById(R.id.tempday4);
+        tvDay5 = findViewById(R.id.tempday5);
+
+        tvNight1 = findViewById(R.id.tempnight1);
+        tvNight2 = findViewById(R.id.tempnight2);
+        tvNight3 = findViewById(R.id.tempnight3);
+        tvNight4 = findViewById(R.id.tempnight4);
+        tvNight5 = findViewById(R.id.tempnight5);
     }
 
 
@@ -179,16 +199,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void showWeather()
+    public void showWeather(String lat, String lon)
     {
         for (WeatherObject wo: listThoiTiet)
         {
-            tvCity.setText("Thành phố: "+wo.getCity());
-            tvDate.setText(wo.getDate());
-            tvTemp.setText("Nhiệt độ: " + wo.getTemp()+"°C");
-            tvHumid.setText("Độ ẩm: " + wo.getHumid() + "%");
-            tvWind.setText("Độ gió: " + wo.getWind() + "m/s");
-            tvCloud.setText("Mây: " + wo.getCloud() + "%");
+            if(wo.getLat().equals(lat) && wo.getLon().equals(lon))
+            {
+                tvCity.setText("Thành phố: "+wo.getCity());
+                tvDate.setText(wo.getDate());
+                tvTemp.setText("Nhiệt độ: " + wo.getTemp()+"°C");
+                tvHumid.setText("Độ ẩm: " + wo.getHumid() + "%");
+                tvWind.setText("Độ gió: " + wo.getWind() + "m/s");
+                tvCloud.setText("Mây: " + wo.getCloud() + "%");
+
+            }
+
         }
     }
 
