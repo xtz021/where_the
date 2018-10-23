@@ -62,7 +62,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
-
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -70,24 +69,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
             init();
         }
     }
-    private void geoLocate(){
+
+    private void geoLocate() {
         Log.d(TAG, "geoLocate: geolocating");
 
         String searchString = mSearchText.getText().toString();
 
         Geocoder geocoder = new Geocoder(MapsActivity.this);
         List<Address> list = new ArrayList<>();
-        try{
+        try {
             list = geocoder.getFromLocationName(searchString, 1);
-        }catch (IOException e){
-            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
+        } catch (IOException e) {
+            Log.e(TAG, "geoLocate: IOException: " + e.getMessage());
         }
 
-        if(list.size() > 0){
+        if (list.size() > 0) {
             Address address = list.get(0);
 
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
@@ -95,17 +94,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
     }
-    private void init(){
+
+    private void init() {
         Log.d(TAG, "init: initializing");
 
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_ACTION_DONE
-                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-
+                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
                     //execute our method for searching
                     geoLocate();
                 }
@@ -114,10 +112,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-    private void moveCamera(LatLng latLng, float zoom){
-        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+
+    private void moveCamera(LatLng latLng, float zoom) {
+        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
+
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
@@ -162,15 +162,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionsGranted = true;
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST_CODE);
-            }
+                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionsGranted = true;
         } else {
             ActivityCompat.requestPermissions(this,
                     permissions,
