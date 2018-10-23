@@ -1,24 +1,34 @@
 package com.example.oxygen.m;
-
+//================================================================================================//
+//  decription
+//  - Đọc dữ liệu tại đây.
+//  - Hiện danh sách tên các thành phố và địa điểm đã lưu.
+//  - Tạo sự kiện listItemClikcListener for each item of list
+//  - Create the event for back to mainActivity and info of item clicked.
+//================================================================================================//
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-
+import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class detail_weather extends AppCompatActivity {
-
+    protected String FileName = "data.txt";
+    private static final String TAG = "Detail Weather";
     //Tạo danh sách chứa dữ liệu.
     private List<detail> danhsach = new ArrayList<detail>();
 
@@ -29,9 +39,40 @@ public class detail_weather extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_weather);
-
-//        dataInput();
-//        show_data();
+        Log.d(TAG, "onCreate: create the app started");
+        read_file_data();
+    }
+    private void read_file_data() {
+        //Đọc dữ liệu từ file.
+        //Trả về một danh sách các phần đối tượng kiểu detail đã tại sẵn.
+        Log.d(TAG, "read_file_data: begining process read dât from file local");
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try {
+            Scanner s = new Scanner(new File(FileName));
+            while (s.hasNextLine()){
+            }
+            fis = this.openFileInput(FileName);
+            ois = new ObjectInputStream(fis);
+//            listThoiTiet = (ArrayList<WeatherObject>) ois.readObject();
+        } catch (IOException e) {
+            Toast.makeText(this, "Lỗi đọc file: " + e, Toast.LENGTH_LONG).show();
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     //Chương trình con đổ dữ liệu từ danh sách vào listView
@@ -56,19 +97,17 @@ public class detail_weather extends AppCompatActivity {
     }
 
     //Chương trình con lấy dữ liệu từ mainActivity
-//    private void dataInput()
-//    {
-//        String data = getIntent().getStringExtra("data");
-//
-//        Gson gson = new Gson();
-//
-//        Type type = new TypeToken<List<detail>>(){}.getType();
-//        List<detail> danhsach = gson.fromJson(data, type);
-//        for(detail i: danhsach)
-//        {
-//            detail item_detail = new detail(i.getTenThanhPho(),i.getGio(),i.getMay(),i.getDoAm(),
-//                    i.getDoAm(),i.getLuongMua(),i.getTime_update());
-//            danhsach.add(item_detail);
-//        }
-//    }
+    private void dataInput()
+    {
+        String data = getIntent().getStringExtra("data");
+
+        Gson gson = new Gson();
+
+        Type type = new TypeToken<List<WeatherObject>>(){}.getType();
+        List<WeatherObject> danhsach = gson.fromJson(data, type);
+        for(WeatherObject i: danhsach)
+        {
+
+        }
+    }
 }
