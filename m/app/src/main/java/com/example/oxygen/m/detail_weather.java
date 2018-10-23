@@ -30,7 +30,7 @@ public class detail_weather extends AppCompatActivity {
     protected String FileName = "data.txt";
     private static final String TAG = "Detail Weather";
     //Tạo danh sách chứa dữ liệu.
-    private List<detail> danhsach = new ArrayList<detail>();
+    private List<WeatherObject> danhsach = new ArrayList<>();
 
     //Tạo listView hiển thị dữ liệu trong sanh sách đã lấy
     ListView listView = (ListView) findViewById(R.id.listView);
@@ -44,7 +44,7 @@ public class detail_weather extends AppCompatActivity {
     }
     private void read_file_data() {
         //Đọc dữ liệu từ file.
-        //Trả về một danh sách các phần đối tượng kiểu detail đã tại sẵn.
+        //Trả về một danh sách các phần đối tượng kiểu đã tại sẵn.
         Log.d(TAG, "read_file_data: begining process read dât from file local");
         FileInputStream fis = null;
         ObjectInputStream ois = null;
@@ -78,7 +78,7 @@ public class detail_weather extends AppCompatActivity {
     //Chương trình con đổ dữ liệu từ danh sách vào listView
     private void show_data()
     {
-        ArrayAdapter<detail> arrayAdapter = new ArrayAdapter<detail>(detail_weather.this,
+        ArrayAdapter<WeatherObject> arrayAdapter = new ArrayAdapter<>(detail_weather.this,
                 R.layout.item_list_view, danhsach);
         listView.setAdapter(new customListAdapter(this, danhsach));
         //Khi nhấn vào một đối tượng trong danh sách
@@ -86,7 +86,7 @@ public class detail_weather extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object o = listView.getItemAtPosition(position);
-                detail item = (detail) o;
+                WeatherObject item = (WeatherObject) o;
                 Intent intentItem = new Intent(detail_weather.this, MainActivity.class);
                 Gson gson = new Gson();
                 String sItem = gson.toJson(item);

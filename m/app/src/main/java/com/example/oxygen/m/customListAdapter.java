@@ -1,7 +1,6 @@
 package com.example.oxygen.m;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 public class customListAdapter extends BaseAdapter {
-    private List<detail> danhsach;
+    private List<WeatherObject> danhsach;
     private LayoutInflater layoutInflater;
     private Context context;
 
@@ -21,7 +20,7 @@ public class customListAdapter extends BaseAdapter {
 
     }
 
-    public customListAdapter(Context sContext, List<detail> sDanhSach) {
+    public customListAdapter(Context sContext, List<WeatherObject> sDanhSach) {
         this.context = sContext;
         this.danhsach = sDanhSach;
         layoutInflater = LayoutInflater.from(sContext);
@@ -58,10 +57,10 @@ public class customListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        detail item = this.danhsach.get(position);
-        holder.country.setText(item.getCityName());
+        WeatherObject item = this.danhsach.get(position);
+        holder.country.setText(item.getCity());
         holder.temp.setText("Nhiệt độ: " + item.getTemp());
-        holder.humidity.setText("Độ ẩm: " + item.getClouds());
+        holder.humidity.setText("Độ ẩm: " + item.getCloud());
 //        int image = this.findImageId(item.getImg());
 //
 //        holder.imageView.setImageResource(image);
